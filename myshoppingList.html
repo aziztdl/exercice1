@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
+
+<body>
+
+<script>
+var app=angular.module("myShoppingList", []);
+app.controller("myCtrl", function($scope){
+    $scope.products = ["Milk","Bread","Cheese"];
+	$scope.addItem =  function(){
+	   $scope.errorText="";
+	   if(!$scope.addMe) {return;}
+	   if($scope.products.indexOf($scope.addMe) == -1){
+	   $scope.products.push($scope.addMe);
+	   } else {
+	     $scope.errorText="The item is already in";
+	   }
+	   
+	}
+	$scope.removeItem = function(x){
+	    $scope.products.splice(x,1);
+	}
+});
+</script>
+
+<div ng-app="myShoppingList" ng-controller="myCtrl">
+     <ul>
+	       <li ng-repeat=" x in products ">
+		   {{x}}
+		      <span ng-click="removeItem($index)">&times;</span>
+		   </li>
+	 </ul>
+	 <input type="text" ng-model="addMe">
+	 <button ng-click="addItem()">Add</button>
+	 <p>{{ errorText }}</p>
+</div>
+<script>
+angular.module('docsTimeDirective', [])
+.controller('Controller', ['$scope', function($scope) {
+  $scope.format = 'M/d/yy h:mm:ss a';
+}])
+.directive('myCurrentTime', ['$interval', 'dateFilter', function($interval, dateFilter) {
+
+  function link(scope, element, attrs) {
+    var format,
+        timeoutId;
+
+    function updateTime() {
+      element.text(dateFilter(new Date(), format));
+    }
+
+    scope.$watch(attrs.myCurrentTime, function(value) {
+      format = value;
+      updateTime();
+    });
+
+    element.on('$destroy', function() {
+      $interval.cancel(timeoutId);
+    });
+
+    // start the UI update process; save the timeoutId for canceling
+    timeoutId = $interval(function() {
+      updateTime(); // update DOM
+    }, 1000);
+  }
+
+  return {
+    link: link
+  };
+}])
+.directive('customButon',function(){
+   return {
+      type: 'E',
+	  link: function(scope,element,attrs){
+	  },
+   
+   }
+})
+;
+
+</script>
+<div ng-controller="Controller">
+  Date format: <input ng-model="format"> <hr/>
+  Current time is: <span my-current-time="format"></span>
+</div>
+
+
+</body>
+
+</html>
